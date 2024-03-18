@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Tasks",
+    "slug": "Tasks",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icone.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/icone.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icone.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.drws.Tasks",
+      "buildType": "apk"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ce79140d-838b-4e41-ac68-c383c4ad7d37"
+      }
+    }
+  }
+}
