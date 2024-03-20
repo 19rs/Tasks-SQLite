@@ -7,8 +7,8 @@ import { categories } from "../utils/data";
 
 interface Props {
     task: Task;
-    handleRemoveTask: (id: string) => void;
-    handleDoneTask: (id: string) => void;
+    handleRemoveTask: (id: number) => void;
+    handleDoneTask: (id: number) => void;
 }
 
 const ItemCard = ({ task, handleRemoveTask, handleDoneTask }: Props) => {

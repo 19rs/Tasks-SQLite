@@ -7,12 +7,14 @@ import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from "react-native-dropdown-picker";
 import { categories } from "../utils/data";
 import CategoryItem from "../components/CategoryItem";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError, showSuccess } from "../components/Toast";
 import ItemCard from "../components/ItemCard";
 import { Task } from "../types/Task";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
+import { StatusBar } from 'react-native';
+// import * as SQLite from "expo-sqlite";
+import db from "../services/sqlite/SQLiteDatabase";
 
 const Home = () => {
     const { user, getUser } = useContext(UserContext);
@@ -21,12 +23,24 @@ const Home = () => {
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [taskInput, setTaskInput] = useState("");
     const [taskList, setTaskList] = useState<Task[]>([]);
-    const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+
+
+    // const openDatabase = () => {
+    //     const db = SQLite.openDatabase("db.db");
+    //     return db;
+    // }
+
+    // const db = openDatabase();
 
 
     useEffect(() => {
-        getData();
         getUser();
+        db.transaction((tx) => {
+            tx.executeSql(
+                "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, completed INT, title TEXT, category TEXT);"
+            );
+        });
+        getTasks();
     }, []);
 
     useEffect(() => {
@@ -34,80 +48,90 @@ const Home = () => {
     }, [taskList]);
 
 
-    const getData = async () => {
-        try {
-          await getTasks();
-        } catch (error) {
-          showError("Não foi possível recuperar a lista de tarefas");
-        }
-    };
-
-
     const getTasks = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem("@tasks");
-            const tasksData = jsonValue !== null ? JSON.parse(jsonValue) : null;
-            setTaskList(tasksData);
-        } catch (error) {
-            showError("Não foi possível recuperar a lista de tarefas");
-        }
+       db.transaction((tx) => {
+        tx.executeSql(
+            "SELECT * FROM tasks WHERE completed = 0;",
+            [],
+            (_, { rows: { _array } }) => {
+                setTaskList(_array);
+            }
+        );
+       });
     };
 
 
-    const storeTasks = async (value: Task[]) => {
-        try {
-          const jsonValue = JSON.stringify(value);
-          await AsyncStorage.setItem("@tasks", jsonValue);
-        } catch (error) {
-          showError("Não foi possível salvar as lista de tarefas");
-        }
-      };
-       
+    const getTasksByCategory = (category: string) => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                "SELECT * FROM tasks WHERE completed = 0 AND category = ?;",
+                [category],
+                (_, { rows: { _array } }) => {
+                    setTaskList(_array);
+                }
+            );
+        });
+    };
+
+    const getCompletedTasks = () => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                "SELECT * FROM tasks WHERE completed = 1;",
+                [],
+                (_, { rows: { _array } }) => {
+                    setTaskList(_array);
+                }
+            );
+        });
+    };
+
 
     const handleAddTask = async () => {
-        if(taskInput.trim() !== '' && categoryValue) {
-            const currentDate = new Date();
-            const currentTimeInMillis = currentDate.getTime().toString();
+        if (taskInput !== "" && categoryValue) {
+            db.transaction((tx) => {
+                tx.executeSql(
+                    "INSERT INTO tasks (completed, title, category) VALUES (0, ?, ?);",
+                    [taskInput, categoryValue]
+                );
+                // tx.executeSql(
+                //     "SELECT * FROM tasks WHERE completed = 0;",
+                //     [],
+                //     (_, { rows: { _array } }) => {
+                //         setTaskList(_array);
+                //     }
+                // );
+            });
 
-            const newTaskList = [...taskList ?? []];
-            const data: Task = { id: currentTimeInMillis, title: taskInput, completed: false, category: categoryValue };
-            newTaskList.push(data);
-            
-            storeTasks(newTaskList);
-            setTaskInput('');
+            setTaskInput("");
             setCategoryValue(null);
-            getData();
-        } else {
-            showError("Preencha a tarefa e selecione uma categoria");
         }
     };
 
-    const handleDoneTask = (id: string) => {
-        const existingTask = taskList.find(t => id === t.id);
-
-        if (existingTask) {
-            const newTaskList = taskList.map((task) =>
-                task.id === existingTask.id
-                ? { ...task, completed: true }
-                : task
+    const handleDoneTask = (id: number) => {
+        db.transaction((tx) => {
+            tx.executeSql("UPDATE tasks SET completed = ? WHERE id = ?;", [1, id]);
+            tx.executeSql(
+                "SELECT * FROM tasks WHERE completed = 0;",
+                [],
+                (_, { rows: { _array } }) => {
+                    setTaskList(_array);
+                }
             );
-
-            setTaskList(newTaskList);
-            storeTasks(newTaskList);
-            getData();
-            handleSelectCategory(selectedCategory)
-        }
+        });
     };
 
-    const handleRemoveTask = (id: string) => {
-        const newTaskList = [...taskList];
-
-        const taskIndex = newTaskList.findIndex(task => task.id === id);
-    
-        newTaskList.splice(taskIndex, 1) 
-        setTaskList(newTaskList);
-        storeTasks(newTaskList);
-        getData();
+    const handleRemoveTask = (id: number) => {
+        db.transaction((tx) => {
+            tx.executeSql("DELETE FROM tasks WHERE id = ?;", [id]);
+            tx.executeSql(
+                "SELECT * FROM tasks WHERE completed = 0;",
+                [],
+                (_, { rows: { _array } }) => {
+                    setTaskList(_array);
+                }
+            );
+        });
+        //precisa?
         handleSelectCategory(selectedCategory)
     };
     
@@ -118,22 +142,22 @@ const Home = () => {
             let tasks:Task[] = [];
             switch(type) {
                 case "all":
-                    tasks = taskList.filter(task => !task.completed);
+                    getTasks();
                     break;
                 case "done":
-                    tasks = taskList.filter(task => task.completed);
+                    getCompletedTasks();
                     break;
                 default:
-                    tasks = taskList.filter(task => task.category === type)
+                    getTasksByCategory(type);
                     break;
             }
-            setFilteredTasks(tasks);
+            // setFilteredTasks(tasks);
         }
     };
 
     return(
         <SafeAreaView style={styles.container}>
-            <StatusBar style="auto" />
+            <StatusBar barStyle="light-content" backgroundColor="#292d3e" />
                 <TextInput
                     style={styles.input}
                     placeholder={`Oi ${user?.firstName}! O que você quer fazer?`}
@@ -207,7 +231,7 @@ const Home = () => {
                 <FlatList
                     style={{marginBottom: 20}}
                     horizontal={false}
-                    data={filteredTasks}
+                    data={taskList}
                     renderItem={({ item }) => (
                         <ItemCard
                             task={item}
