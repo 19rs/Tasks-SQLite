@@ -15,6 +15,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { StatusBar } from 'react-native';
 // import * as SQLite from "expo-sqlite";
 import db from "../services/sqlite/SQLiteDatabase";
+import Animated, { BounceInDown, FlipInYRight, FlipOutYRight } from "react-native-reanimated";
 
 const Home = () => {
     const { user, getUser } = useContext(UserContext);
@@ -93,13 +94,13 @@ const Home = () => {
                     "INSERT INTO tasks (completed, title, category) VALUES (0, ?, ?);",
                     [taskInput, categoryValue]
                 );
-                // tx.executeSql(
-                //     "SELECT * FROM tasks WHERE completed = 0;",
-                //     [],
-                //     (_, { rows: { _array } }) => {
-                //         setTaskList(_array);
-                //     }
-                // );
+                tx.executeSql(
+                    "SELECT * FROM tasks WHERE completed = 0;",
+                    [],
+                    (_, { rows: { _array } }) => {
+                        setTaskList(_array);
+                    }
+                );
             });
 
             setTaskInput("");
@@ -132,14 +133,13 @@ const Home = () => {
             );
         });
         //precisa?
-        handleSelectCategory(selectedCategory)
+        // handleSelectCategory(selectedCategory)
     };
     
-    const handleSelectCategory = async (type: string) => {
+    const handleSelectCategory = (type: string) => {
         setSelectedCategory(type)
 
         if(taskList) {
-            let tasks:Task[] = [];
             switch(type) {
                 case "all":
                     getTasks();
@@ -151,7 +151,6 @@ const Home = () => {
                     getTasksByCategory(type);
                     break;
             }
-            // setFilteredTasks(tasks);
         }
     };
 
@@ -211,7 +210,8 @@ const Home = () => {
                 </View>
 
                 <View>
-                    <FlatList 
+                    <Animated.FlatList 
+                        entering={BounceInDown}
                         style={styles.categoryListFilter}
                         showsHorizontalScrollIndicator={false}
                         horizontal
@@ -228,7 +228,16 @@ const Home = () => {
                         keyExtractor={(item) => item.id.toString()}
                     />
                 </View>
-                <FlatList
+
+                <Animated.View 
+                    entering={BounceInDown}
+                    style={{display: taskList.length === 0 ? 'flex' : 'none', alignItems: 'center'}}>
+                    <Text style={{color: '#fff'}}>Sem tarefas para fazer!</Text>
+                </Animated.View>
+
+                <Animated.FlatList
+                    entering={FlipInYRight}
+                    exiting={FlipOutYRight}
                     style={{marginBottom: 20}}
                     horizontal={false}
                     data={taskList}
@@ -240,6 +249,7 @@ const Home = () => {
                         />
                     )}
                 />
+                
         </SafeAreaView>
     );
 };
