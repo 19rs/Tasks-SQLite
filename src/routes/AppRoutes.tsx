@@ -3,6 +3,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Home from "../screens/Home";
 import User from "../screens/User";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import AddTask from "../screens/AddTask";
 
 const Stack = createNativeStackNavigator();
 
@@ -12,6 +13,20 @@ export const HomeRoutes = () => {
             <Stack.Screen
                 name="Home"
                 component={Home}
+                options={{
+                    headerTitle: "Lista de Tarefas",
+                    headerStyle: {
+                        backgroundColor: '#292d3e',
+                      },
+                      headerTintColor: '#ceff27',
+                      headerTitleStyle: {
+                        fontWeight: '500',
+                      },
+                }}
+            />
+            <Stack.Screen
+                name="AddTask"
+                component={AddTask}
                 options={{
                     headerTitle: "Lista de Tarefas",
                     headerStyle: {
