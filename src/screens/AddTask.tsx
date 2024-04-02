@@ -87,7 +87,7 @@ const AddTask = () => {
                     />
 
                     <TouchableOpacity onPress={showDatePicker}>
-                        <Fontisto name="date" size={24} color="#ceff27" />
+                        <Fontisto name="date" size={36} color="#ceff27" />
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={handleAddTask}>
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     viewSelectCategory: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '80%',
+        width: '60%',
         columnGap: 20,
         marginBottom: 10,
     }
