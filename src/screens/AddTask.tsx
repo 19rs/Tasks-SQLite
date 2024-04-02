@@ -1,22 +1,51 @@
 import { StatusBar } from 'react-native';
-import { TouchableOpacity } from "react-native"
+import { View, TouchableOpacity, StyleSheet } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
-import { View } from "react-native-reanimated/lib/typescript/Animated"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from '../contexts/UserContext';
-
+import { TaskContext } from '../contexts/TaskContext';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { categories } from '../utils/data';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Fontisto } from '@expo/vector-icons';
 
 const AddTask = () => {
-const { user, getUser } = useContext(UserContext);
+    const { taskInput, setTaskInput, categoryValue, setCategoryValue, handleAddTask, open, setOpen, dateInput, setDateInput } = useContext(TaskContext);
+    
+    const [mode, setMode] = useState<"date" | "time">("date");
+    const [show, setShow] = useState(false);
+
+    const onChange = (event: any, selectedDate: any) => {
+        const currentDate = selectedDate;
+        setShow(false);
+        setDateInput(currentDate);
+    };
+    
+    const showMode = (currentMode: React.SetStateAction<"date" | "time">) => {
+        setShow(true);
+        setMode(currentMode);
+    };
+    
+    const showDatePicker = () => {
+        showMode("date");
+    };
 
     return(
         <SafeAreaView style={styles.container}>
+            {show && (
+            <DateTimePicker
+                testID="dateTimePicker"
+                value={dateInput}
+                mode={mode}
+                is24Hour={true}
+                onChange={onChange}
+            />
+            )}
             <StatusBar barStyle="light-content" backgroundColor="#292d3e" />
                 <TextInput
                     style={styles.input}
-                    placeholder={`Oi ${user?.firstName}! O que você quer fazer?`}
+                    placeholder={'O que você quer fazer?'}
                     placeholderTextColor={'#fff'}
                     value={taskInput}
                     onChangeText={setTaskInput}
@@ -57,36 +86,25 @@ const { user, getUser } = useContext(UserContext);
                         }}
                     />
 
-                    <TouchableOpacity
-                        onPress={handleAddTask}
-                    >
+                    <TouchableOpacity onPress={handleAddTask}>
                         <MaterialCommunityIcons name="send-circle-outline" size={45} color="#ceff27" />    
-                        {/* <Ionicons name="send" size={36} color="#ceff27" />             */}
                     </TouchableOpacity>
-
                 </View>
-                </SafeAreaView>
-                )
+
+            <TouchableOpacity onPress={showDatePicker}>
+                <Fontisto name="date" size={24} color="#fff" />
+            </TouchableOpacity>
+        </SafeAreaView>
+        )
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 5,
+        paddingTop: 25,
         backgroundColor: '#252525',
-        justifyContent: 'center',
         paddingHorizontal: 20,
         rowGap: 10,
-    },
-    scroll: {
-        rowGap: 10,
-    },
-    hello: {
-        color: '#fff',
-        textAlign: 'center',
-        marginBottom: 10,
-        fontSize: 18,
-        fontWeight: 'bold', 
     },
     input: {
         backgroundColor: '#292d3e',
@@ -111,11 +129,6 @@ const styles = StyleSheet.create({
         width: '80%',
         columnGap: 20,
         marginBottom: 10,
-    },
-    categoryListFilter: {
-        marginTop: 10,
-        marginBottom: 5,
-        height: 90,
     }
 });
 
