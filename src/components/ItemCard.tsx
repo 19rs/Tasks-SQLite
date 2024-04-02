@@ -4,6 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { Task } from "../types/Task";
 import { categories } from "../utils/data";
+import moment from "moment";
 
 interface Props {
     task: Task;
@@ -63,6 +64,10 @@ const ItemCard = ({ task, handleRemoveTask, handleDoneTask }: Props) => {
             marginBottom: 3,
             zIndex: 2,
         },
+        date: {
+            color: '#fff',
+            fontSize: 15,
+        },
         title: {
             color: '#fff',
             fontSize: 18,
@@ -96,6 +101,7 @@ const ItemCard = ({ task, handleRemoveTask, handleDoneTask }: Props) => {
                         marginRight: 10,
                     }}
                 />
+                <Text style={styles.date}>{ moment(task.date).format('DD/MM')}  -  </Text>
                 <Text style={styles.title}>{task.title}</Text>
             </View>
         </Swipeable>

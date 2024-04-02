@@ -86,14 +86,14 @@ const AddTask = () => {
                         }}
                     />
 
+                    <TouchableOpacity onPress={showDatePicker}>
+                        <Fontisto name="date" size={24} color="#ceff27" />
+                    </TouchableOpacity>
+
                     <TouchableOpacity onPress={handleAddTask}>
                         <MaterialCommunityIcons name="send-circle-outline" size={45} color="#ceff27" />    
                     </TouchableOpacity>
-                </View>
-
-            <TouchableOpacity onPress={showDatePicker}>
-                <Fontisto name="date" size={24} color="#fff" />
-            </TouchableOpacity>
+                </View>            
         </SafeAreaView>
         )
 };

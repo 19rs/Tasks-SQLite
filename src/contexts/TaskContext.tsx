@@ -57,7 +57,6 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
 
 
     const getTasksByCategory = (category: string) => {
-        console.log(dateSelected)
         db.transaction((tx) => {
             tx.executeSql(
             `SELECT * FROM tasks WHERE completed = 0 AND category = ? AND date = ?;`,
@@ -70,10 +69,7 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
     };
 
     const getTasksByDate = (date: string) => {
-        console.log('getTasksByDate')
         setDateSelected(date);
-        console.log('selectedCategory:');
-        console.log(selectedCategory);
         const query =
         selectedCategory === "all"
             ? `SELECT * FROM tasks WHERE completed = 0 AND date = ?;`
@@ -83,13 +79,10 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
                 query,
                 selectedCategory === "all" ? [date] : [date, selectedCategory],
                 (_, { rows: { _array } }) => {
-                    console.log(query);
                 setTaskList(_array);
                 }
             );
         });
-        console.log('query:');
-        console.log(query);
     };
 
  const getCompletedTasks = () => {
@@ -105,14 +98,8 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
  };
 
 
- //ver
  const handleAddTask = async () => {
-    console.log('veio na funcao')
      if (taskInput !== "" && categoryValue) {
-        console.log('entrou no if')
-        console.log(taskInput)
-        console.log(categoryValue)
-        console.log(dateInput)
          db.transaction((tx) => {
              tx.executeSql(
                  "INSERT INTO tasks (completed, title, category, date) VALUES (0, ?, ?, ?);",
@@ -161,19 +148,16 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
  
  const handleSelectCategory = (type: string) => {
      setSelectedCategory(type)
-        console.log(type)
+    
      if(taskList) {
          switch(type) {
              case "all":
-                console.log('todas')
                  getTasks();
                  break;
              case "done":
-             console.log('completas')
                  getCompletedTasks();
                  break;
              default:
-             console.log('por categoria')
                  getTasksByCategory(type);
                  break;
         }
