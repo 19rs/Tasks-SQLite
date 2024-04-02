@@ -3,6 +3,7 @@ export interface Task {
     title: string;
     completed: number;
     category: string;
+    date: string;
 }
 
 export interface Category {

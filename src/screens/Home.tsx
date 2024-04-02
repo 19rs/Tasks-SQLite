@@ -16,14 +16,19 @@ import { StatusBar } from 'react-native';
 // import * as SQLite from "expo-sqlite";
 import db from "../services/sqlite/SQLiteDatabase";
 import Animated, { BounceInDown, FlipInYRight, FlipOutYRight } from "react-native-reanimated";
+import { TaskContext } from "../contexts/TaskContext";
+import WeekCalendar from "../components/WeekCalendar";
 
 const Home = () => {
     const { user, getUser } = useContext(UserContext);
-    const [open, setOpen] = useState(false);
-    const [categoryValue, setCategoryValue] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState("all");
-    const [taskInput, setTaskInput] = useState("");
-    const [taskList, setTaskList] = useState<Task[]>([]);
+    const {
+      taskList,
+      selectedCategory,
+      handleSelectCategory,
+      handleRemoveTask,
+      handleDoneTask,
+      getTasks,
+    } = useContext(TaskContext);
 
 
     // const openDatabase = () => {
@@ -38,15 +43,13 @@ const Home = () => {
         getUser();
         db.transaction((tx) => {
             tx.executeSql(
-                "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, completed INT, title TEXT, category TEXT);"
+                "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, completed INT, title TEXT, category TEXT, date TEXT);"
             );
         });
         getTasks();
     }, []);
 
-    useEffect(() => {
-        handleSelectCategory(selectedCategory);
-    }, [taskList]);
+
 
 
     
@@ -55,6 +58,7 @@ const Home = () => {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#292d3e" />
                 <View>
+                    <WeekCalendar />
                     <Animated.FlatList 
                         entering={BounceInDown}
                         style={styles.categoryListFilter}
@@ -102,39 +106,14 @@ const Home = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 5,
+        paddingTop: 15,
         backgroundColor: '#252525',
         justifyContent: 'center',
         paddingHorizontal: 20,
-        rowGap: 10,
     },
-    scroll: {
-        rowGap: 10,
-    },
-    hello: {
-        color: '#fff',
-        textAlign: 'center',
-        marginBottom: 10,
-        fontSize: 18,
-        fontWeight: 'bold', 
-    },
-    input: {
-        backgroundColor: '#292d3e',
-        color: '#fff',
-        padding: 10,
-        paddingLeft: 15,
-        fontSize: 18,
-        minHeight: 50,
-        borderWidth: 1,
-        borderColor: '#000',
-        borderRadius: 8,
-    },
-    dropDownPicker: {
-        color: "#fff",
-        fontSize: 18,
-        paddingLeft: 15,
-        zIndex: 10,
-    },
+    // scroll: {
+    //     rowGap: 10,
+    // },
     viewSelectCategory: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -144,7 +123,6 @@ const styles = StyleSheet.create({
     },
     categoryListFilter: {
         marginTop: 10,
-        marginBottom: 5,
         height: 90,
     }
 });

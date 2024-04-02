@@ -4,6 +4,7 @@ import Home from "../screens/Home";
 import User from "../screens/User";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AddTask from "../screens/AddTask";
+import AddHeader from "../components/AddHeader";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ export const HomeRoutes = () => {
                       headerTitleStyle: {
                         fontWeight: '500',
                       },
+                      headerRight: () => <AddHeader />,
                 }}
             />
             <Stack.Screen
