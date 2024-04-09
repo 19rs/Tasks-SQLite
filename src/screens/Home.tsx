@@ -2,16 +2,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, TextInput, StyleSheet, View, FlatList, ScrollView } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import DropDownPicker from "react-native-dropdown-picker";
 import { categories } from "../utils/data";
 import CategoryItem from "../components/CategoryItem";
 import { showError, showSuccess } from "../components/Toast";
 import ItemCard from "../components/ItemCard";
-import { Task } from "../types/Task";
-import { TouchableOpacity } from "react-native-gesture-handler";
-// import { StatusBar } from "expo-status-bar";
 import { StatusBar } from 'react-native';
 // import * as SQLite from "expo-sqlite";
 import db from "../services/sqlite/SQLiteDatabase";
@@ -38,12 +32,12 @@ const Home = () => {
 
     // const db = openDatabase();
 
-
+    
     useEffect(() => {
         getUser();
         db.transaction((tx) => {
             tx.executeSql(
-                "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, completed INT, title TEXT, category TEXT, date TEXT);"
+                "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, completed INT, title TEXT, category TEXT, date TEXT, images TEXT);"
             );
         });
         getTasks();

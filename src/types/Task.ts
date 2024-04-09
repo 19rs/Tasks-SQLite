@@ -4,6 +4,7 @@ export interface Task {
     completed: number;
     category: string;
     date: string;
+    images: string;
 }
 
 export interface Category {
