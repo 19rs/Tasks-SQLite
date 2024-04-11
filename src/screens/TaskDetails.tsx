@@ -11,7 +11,7 @@ import moment from "moment";
 
 const TaskDetails = () => {
     const routes = useRoute();
-    const { id, title, category, date, images} = routes.params as Task;
+    const { id, title, category, date, images } = routes.params as Task;
 
     const { takePhoto, pickImage } = useContext(TaskContext);
 
@@ -51,6 +51,9 @@ const TaskDetails = () => {
             paddingVertical: 12,
             borderTopLeftRadius: 2,
             borderTopRightRadius: 2,
+            // borderColor: 'white',
+            // borderWidth: 1,
+            // borderBottomWidth: 0,
         },
         texto: {
             color: '#fff',
@@ -59,7 +62,9 @@ const TaskDetails = () => {
         titulo: {
             backgroundColor: '#303030',
             borderWidth: 1,
+            // borderTopWidth: 0,
             borderColor: corCategoria(),
+            // borderColor: 'white',
             color: '#fff',
             fontSize: 20,
             padding: 20,
@@ -69,8 +74,9 @@ const TaskDetails = () => {
         },
         imagem: {
             width: 320,
-            height: 500,
-            marginBottom: 20,
+            height: 300,
+            // resizeMode:"contain",
+            marginBottom: 15,
             borderWidth: 1,
             borderRadius: 2,
             borderColor: 'white',
@@ -85,6 +91,7 @@ const TaskDetails = () => {
                 <FontAwesome name="photo" size={34} color="#ceff27"  onPress={() => pickImage(id)} />
             </View>
             <View style={ styles.categoria }>
+                <Text style={ styles.texto }> { id } </Text>
                 <Text style={ styles.texto }>{ nomeCategoria() }</Text>
                 <Text style={ styles.texto }> - </Text>
                 <Text style={ styles.texto }>{ moment(date).format('DD/MM/YYYY')}</Text>
@@ -93,7 +100,8 @@ const TaskDetails = () => {
 
 
             <FlatList
-                data={images.split(",")}
+                data={ images ? images.split(",") : '' }
+                // extraData={images}
                 renderItem={({ item }) => (
                     <Image
                         source={{ uri: "data:image/jpeg;base64," + item }}
