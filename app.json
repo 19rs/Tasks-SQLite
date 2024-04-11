@@ -28,6 +28,15 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permita que $(PRODUCT_NAME) acesse sua galeria de fotos",
+          "cameraPermission": "Permita que $(PRODUCT_NAME) acesse sua câmera"
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "ce79140d-838b-4e41-ac68-c383c4ad7d37"

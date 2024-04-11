@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View, Alert } from "react-native";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Swipeable } from "react-native-gesture-handler";
+import { Swipeable, TouchableOpacity } from "react-native-gesture-handler";
 import { Task } from "../types/Task";
 import { categories } from "../utils/data";
 import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
     task: Task;
@@ -13,7 +14,14 @@ interface Props {
 }
 
 const ItemCard = ({ task, handleRemoveTask, handleDoneTask }: Props) => {
+
+    const navigation = useNavigation<any>();
+
     const category = categories.filter((c) => c.value === task.category);
+
+    const handleDetails = () => {
+        navigation.navigate('TaskDetails', task);
+    };
 
     const handleDelete = () => {
         Alert.alert("Tarefas", "Tem certeza que deseja excluir esta tarefa?", [
@@ -71,6 +79,8 @@ const ItemCard = ({ task, handleRemoveTask, handleDoneTask }: Props) => {
         title: {
             color: '#fff',
             fontSize: 18,
+            width: '70%',
+            textAlign: 'justify'
         },
         swipeLeft: {
             flex: 1,
@@ -91,19 +101,21 @@ const ItemCard = ({ task, handleRemoveTask, handleDoneTask }: Props) => {
 
     return (
         <Swipeable renderLeftActions={LeftAction} renderRightActions={RightAction}>
-            <View style={styles.container}>
-                <View
-                    style={{
-                        borderStyle: "solid",
-                        height: "100%",
-                        borderLeftWidth: 6,
-                        borderColor: category[0].color,
-                        marginRight: 10,
-                    }}
-                />
-                <Text style={styles.date}>{ moment(task.date).format('DD/MM')}  -  </Text>
-                <Text style={styles.title}>{task.title}</Text>
-            </View>
+            <TouchableOpacity onPress={handleDetails}>
+                <View style={styles.container}>
+                    <View
+                        style={{
+                            borderStyle: "solid",
+                            height: "100%",
+                            borderLeftWidth: 6,
+                            borderColor: category[0].color,
+                            marginRight: 10,
+                        }}
+                    />
+                    <Text style={styles.date}>{ moment(task.date).format('DD/MM')}  -  </Text>
+                    <Text style={styles.title}>{task.title}</Text>
+                </View>
+            </TouchableOpacity>
         </Swipeable>
     );
 };
