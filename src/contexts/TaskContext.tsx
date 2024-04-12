@@ -50,6 +50,7 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
     const [dateSelected, setDateSelected] = useState("");
     const [taskSelected, setTaskSelected] = useState("");
     const [image, setImage] = useState<string[]>([]);
+     
 
     const getTasks = async () => {
         db.transaction((tx) => {
@@ -58,6 +59,8 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
                 [],
                 (_, { rows: { _array } }) => {
                     setTaskList(_array);
+                    setImage([])
+                    console.log('chamou get Tasks')
                 }
             );
         });
@@ -145,6 +148,13 @@ const handleAddImage = async (file: string[], id: number) => {
                 setTaskList(_array);
             }
         );
+        // tx.executeSql(
+        //     "SELECT * FROM tasks WHERE id = ?;",
+        //     [id],
+        //     (_, { rows: { _array } }) => {
+        //         setTaskSelected(_array[0]);
+        //     }
+        // );
     });
 };
 
@@ -154,6 +164,7 @@ const handleImage = async (file: string, id: number) => {
             "SELECT images FROM tasks WHERE id = ?;",
             [id],
             (_, { rows: { _array } }) => {
+                // setImage([])
                 let taskImages = _array.length > 0 ? _array[0].images.split(',') : [];
                 // console.log('taskImages')
                 // console.log(taskImages)

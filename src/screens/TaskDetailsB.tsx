@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, FlatList } from "react-native";
 import { Task } from "../types/Task";
 import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { TaskContext } from "../contexts/TaskContext";
 import { categories } from "../utils/data";
 import moment from "moment";
@@ -11,20 +11,9 @@ import moment from "moment";
 
 const TaskDetails = () => {
     const routes = useRoute();
-    let { id, title, category, date, images } = routes.params as Task;
+    const { id, title, category, date, images} = routes.params as Task;
 
-    const { takePhoto, pickImage, image, setImage } = useContext(TaskContext);
-
-    
-    useEffect(() => {
-        let imagens = images.split(',')
-        setImage(imagens)
-    }, [])
-
-    useEffect(() => {
-        console.log('alterou')
-        console.log(image.length)
-    }, [image]);
+    const { takePhoto, pickImage } = useContext(TaskContext);
 
     const nomeCategoria = () => {
         let index: number = categories.findIndex(c => c.value === category)
@@ -48,17 +37,17 @@ const TaskDetails = () => {
         botoesImagem: {
             flexDirection: 'row',
             justifyContent: 'flex-end',
-            alignItems: 'center',
             gap: 20,
+            marginBottom: 10,
             marginRight: 2,
         },
         categoria: {
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             gap: 10,
             backgroundColor: corCategoria(),
             color: '#fff',
-            paddingHorizontal: 17,
+            paddingHorizontal: 15,
             paddingVertical: 12,
             borderTopLeftRadius: 2,
             borderTopRightRadius: 2,
@@ -69,12 +58,11 @@ const TaskDetails = () => {
         },
         titulo: {
             backgroundColor: '#303030',
-            borderWidth: 2,
+            borderWidth: 1,
             borderColor: corCategoria(),
             color: '#fff',
             fontSize: 20,
-            paddingHorizontal: 20,
-            paddingVertical: 25,
+            padding: 20,
             borderBottomLeftRadius: 2,
             borderBottomRightRadius: 2,
             marginBottom: 20,
@@ -82,8 +70,6 @@ const TaskDetails = () => {
         imagem: {
             width: 320,
             height: 300,
-            // resizeMode: 'contain',
-            // resizeMode: 'center',
             marginBottom: 20,
             borderWidth: 1,
             borderRadius: 2,
@@ -94,22 +80,20 @@ const TaskDetails = () => {
 
     return(
         <View style={styles.container}>
+            <View style={ styles.botoesImagem }>
+                <MaterialIcons name="add-a-photo" size={34} color="#ceff27" onPress={() => takePhoto(id)} />
+                <FontAwesome name="photo" size={34} color="#ceff27"  onPress={() => pickImage(id)} />
+            </View>
             <View style={ styles.categoria }>
-                <View style={{ flexDirection: 'column'}}>
-                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white'}}>{ nomeCategoria() }</Text>
-                    <Text style={ styles.texto }>{ moment(date).format('DD/MM/YYYY')}</Text>
-                </View>
-                <View style={ styles.botoesImagem }>
-                    <MaterialIcons name="add-a-photo" size={34} color="#fff" onPress={() => takePhoto(id)} />
-                    <FontAwesome name="photo" size={34} color="#fff"  onPress={() => pickImage(id)} />
-                </View>
+                <Text style={ styles.texto }>{ nomeCategoria() }</Text>
+                <Text style={ styles.texto }> - </Text>
+                <Text style={ styles.texto }>{ moment(date).format('DD/MM/YYYY')}</Text>
             </View>
             <Text style={styles.titulo}>{ title }</Text>
 
 
             <FlatList
-                // data={images.split(",")}
-                data={image}
+                data={images.split(",")}
                 renderItem={({ item }) => (
                     <Image
                         source={{ uri: "data:image/jpeg;base64," + item }}
