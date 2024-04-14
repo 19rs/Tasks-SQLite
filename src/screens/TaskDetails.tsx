@@ -19,8 +19,15 @@ const TaskDetails = () => {
     
     useEffect(() => {
         console.log('aqui')
-        let imagens = images.split(',')
-        setImage(imagens)
+        if(images && images !== '') {
+            console.log('deuuu')
+            console.log('images')
+            console.log(images)
+            let imagens = images.split(',')
+            setImage(imagens)    
+        }
+        // let imagens = images.split(',')
+        // setImage(imagens)
         // setTaskImages(imagens)
     }, [])
 
