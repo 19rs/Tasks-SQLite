@@ -21,7 +21,7 @@ const TaskDetails = () => {
         console.log('aqui')
         let imagens = images.split(',')
         setImage(imagens)
-        setTaskImages(imagens)
+        // setTaskImages(imagens)
     }, [])
 
     useEffect(() => {
@@ -30,7 +30,7 @@ const TaskDetails = () => {
         //images = image
         setTaskImages(image)
 
-    }, [taskImages]);
+    }, [image]);
 
     const nomeCategoria = () => {
         let index: number = categories.findIndex(c => c.value === category)
