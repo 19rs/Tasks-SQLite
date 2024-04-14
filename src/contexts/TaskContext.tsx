@@ -3,6 +3,7 @@ import db from "../services/sqlite/SQLiteDatabase";
 import { Task } from "../types/Task";
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
+import { showSuccess } from "../components/Toast";
 
 type TaskContextProps = {
     taskList: Task[];
@@ -30,6 +31,7 @@ type TaskContextProps = {
     image: string[];
     setImage: (value: string[]) => void;
     taskSelected: string;
+    getTaskByID: (id: number) => any;
 };
 
 type TaskProviderProps = {
@@ -95,6 +97,23 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
         });
     };
 
+    const getTaskByID = async (id: number) => {
+        let task: Task;
+        db.transaction((tx) => {
+            tx.executeSql(
+                "SELECT * FROM tasks WHERE id = ?;",
+                [id],
+                (_, { rows: { _array } }) => {
+                    // setTaskSelected(_array[0]);
+                    task = _array[0];
+                    console.log(_array[0].title)
+                    console.log('Chamou GET TASK BY ID')
+                    return task;
+                }
+            );
+        });
+    };
+
  const getCompletedTasks = () => {
      db.transaction((tx) => {
          tx.executeSql(
@@ -123,7 +142,7 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
                  }
              );
          });
-
+         showSuccess('Tarefa adicionada com sucesso!');
          setTaskInput("");
          setCategoryValue(null);
          getTasks();
@@ -155,6 +174,7 @@ const handleAddImage = async (file: string[], id: number) => {
         //         setTaskSelected(_array[0]);
         //     }
         // );
+        showSuccess('Imagem adicionada com sucesso!');
     });
 };
 
@@ -276,6 +296,7 @@ const takePhoto = async (id: number) => {
             image,
             setImage,
             taskSelected,
+            getTaskByID
         }}
     >
         {children}

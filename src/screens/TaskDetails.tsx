@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, FlatList } from "react-native";
 import { Task } from "../types/Task";
 import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TaskContext } from "../contexts/TaskContext";
 import { categories } from "../utils/data";
 import moment from "moment";
@@ -15,16 +15,22 @@ const TaskDetails = () => {
 
     const { takePhoto, pickImage, image, setImage } = useContext(TaskContext);
 
+    const [taskImages, setTaskImages] = useState<string[]>([])
     
     useEffect(() => {
+        console.log('aqui')
         let imagens = images.split(',')
         setImage(imagens)
+        setTaskImages(imagens)
     }, [])
 
     useEffect(() => {
         console.log('alterou')
         console.log(image.length)
-    }, [image]);
+        //images = image
+        setTaskImages(image)
+
+    }, [taskImages]);
 
     const nomeCategoria = () => {
         let index: number = categories.findIndex(c => c.value === category)
@@ -109,7 +115,8 @@ const TaskDetails = () => {
 
             <FlatList
                 // data={images.split(",")}
-                data={image}
+                data={taskImages}
+                extraData={image}
                 renderItem={({ item }) => (
                     <Image
                         source={{ uri: "data:image/jpeg;base64," + item }}

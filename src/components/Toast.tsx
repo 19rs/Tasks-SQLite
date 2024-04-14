@@ -2,7 +2,7 @@ import Toast from "react-native-root-toast";
 
 const defaultOptions = {
   duration: Toast.durations.LONG,
-  position: Toast.positions.BOTTOM,
+  position: Toast.positions.CENTER,
   shadow: true,
   animation: true,
   hideOnPress: true,
