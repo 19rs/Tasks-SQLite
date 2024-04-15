@@ -64,7 +64,6 @@ const ItemCard = ({ task, handleRemoveTask, handleDoneTask }: Props) => {
         container: {
             flex: 1,
             flexDirection: 'row',
-            // backgroundColor: "#303030",
             backgroundColor: task.completed ? '#186300' : '#303030',
             alignItems: 'center',
             paddingVertical: 10,

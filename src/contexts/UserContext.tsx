@@ -98,13 +98,10 @@ export const UserContextProvider = ({ children }: UserProviderProps) => {
         image: 'https://whatsondisneyplus.b-cdn.net/wp-content/uploads/2021/09/homer.png',
         token: '1'
       }
-
-
       setUser(user);
       storeUser(user);
       setToken(user.token);
       storeToken(user.token);
-
   };
 
   const logout = async () => {

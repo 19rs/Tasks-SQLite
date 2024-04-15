@@ -44,10 +44,6 @@ const Home = () => {
     }, []);
 
 
-
-
-    
-
     return(
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#292d3e" />
@@ -105,9 +101,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 20,
     },
-    // scroll: {
-    //     rowGap: 10,
-    // },
     viewSelectCategory: {
         flexDirection: 'row',
         alignItems: 'center',

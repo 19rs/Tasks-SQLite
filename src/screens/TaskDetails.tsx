@@ -18,25 +18,14 @@ const TaskDetails = () => {
     const [taskImages, setTaskImages] = useState<string[]>([])
     
     useEffect(() => {
-        console.log('aqui')
         if(images && images !== '') {
-            console.log('deuuu')
-            console.log('images')
-            console.log(images)
             let imagens = images.split(',')
             setImage(imagens)    
         }
-        // let imagens = images.split(',')
-        // setImage(imagens)
-        // setTaskImages(imagens)
     }, [])
 
     useEffect(() => {
-        console.log('alterou')
-        console.log(image.length)
-        //images = image
         setTaskImages(image)
-
     }, [image]);
 
     const nomeCategoria = () => {
@@ -52,7 +41,6 @@ const TaskDetails = () => {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            // height: '100%',
             paddingTop: 15,
             backgroundColor: '#252525',
             justifyContent: 'center',

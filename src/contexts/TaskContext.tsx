@@ -62,7 +62,6 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
                 (_, { rows: { _array } }) => {
                     setTaskList(_array);
                     setImage([])
-                    console.log('chamou get Tasks')
                 }
             );
         });
@@ -106,8 +105,6 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
                 (_, { rows: { _array } }) => {
                     // setTaskSelected(_array[0]);
                     task = _array[0];
-                    console.log(_array[0].title)
-                    console.log('Chamou GET TASK BY ID')
                     return task;
                 }
             );
@@ -151,10 +148,6 @@ export const TaskContextProvider = ({ children }: TaskProviderProps) => {
 
 
 const handleAddImage = async (file: string[], id: number) => {
-    // console.log('handleAddImage')
-    // console.log(id)
-    // console.log('length das imagens')
-    // console.log(file.length)
     db.transaction((tx) => {
         tx.executeSql("UPDATE tasks SET images = ? WHERE id = ?;", [
             file.toString(),
@@ -167,13 +160,6 @@ const handleAddImage = async (file: string[], id: number) => {
                 setTaskList(_array);
             }
         );
-        // tx.executeSql(
-        //     "SELECT * FROM tasks WHERE id = ?;",
-        //     [id],
-        //     (_, { rows: { _array } }) => {
-        //         setTaskSelected(_array[0]);
-        //     }
-        // );
         showSuccess('Imagem adicionada com sucesso!');
     });
 };
@@ -184,12 +170,8 @@ const handleImage = async (file: string, id: number) => {
             "SELECT images FROM tasks WHERE id = ?;",
             [id],
             (_, { rows: { _array } }) => {
-                // setImage([])
                 let taskImages = _array.length > 0 ? _array[0].images.split(',') : [];
-                // console.log('taskImages')
-                // console.log(taskImages)
                 taskImages != "" ? taskImages.push(file) : taskImages = file;
-                //taskImages.push(file);
                 handleAddImage(taskImages, id);
                 setImage(taskImages);
             }
@@ -210,8 +192,6 @@ const pickImage = async (id: number) => {
 };
 
 const takePhoto = async (id: number) => {
-    console.log('takePhoto')
-    console.log(id)
     let data = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         aspect: [16, 9],
