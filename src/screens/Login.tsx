@@ -3,9 +3,10 @@ import React, { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UserContext } from "../contexts/UserContext";
 import { StatusBar } from "expo-status-bar";
+import { Button } from "../components/Button";
 
 const Login = () => {
-  const { login } = useContext(UserContext);
+  const { login, googleSignIn } = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,6 +37,12 @@ const Login = () => {
       >
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
+
+      <Button
+        onPress={() => googleSignIn()}
+        title="Login com Google"
+        icon="google"
+      />
     </SafeAreaView>
   );
 };

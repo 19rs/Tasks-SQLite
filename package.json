@@ -13,12 +13,15 @@
     "@expo/vector-icons": "^14.0.0",
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-community/datetimepicker": "^7.6.3",
+    "@react-native-google-signin/google-signin": "^11.0.1",
     "@react-navigation/bottom-tabs": "^6.5.19",
     "@react-navigation/native": "^6.1.16",
     "@react-navigation/native-stack": "^6.9.25",
     "@types/uuid": "^9.0.8",
     "axios": "^1.6.7",
     "expo": "~50.0.11",
+    "expo-dev-client": "~3.3.11",
+    "expo-image-picker": "~14.7.1",
     "expo-sqlite": "~13.4.0",
     "expo-status-bar": "~1.11.1",
     "moment": "^2.30.1",
@@ -34,8 +37,7 @@
     "react-native-screens": "~3.29.0",
     "react-native-web": "~0.19.6",
     "styled-components": "^6.1.8",
-    "uuid": "^9.0.1",
-    "expo-image-picker": "~14.7.1"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

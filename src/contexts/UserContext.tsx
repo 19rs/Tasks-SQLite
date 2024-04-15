@@ -3,6 +3,7 @@ import { ReactNode, createContext, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserDTO } from "../types/User";
 import { showError } from "../components/Toast";
+import { GoogleSignin } from "@react-native-google-signin/google-signin"; 
 
 type UserContextProps = {
   token: string;
@@ -13,6 +14,7 @@ type UserContextProps = {
   getUser: () => void;
   login: (username: string, password: string) => void;
   logout: () => void;
+  googleSignIn: () => void;
 };
 
 type UserProviderProps = {
@@ -89,7 +91,7 @@ export const UserContextProvider = ({ children }: UserProviderProps) => {
   const login = async (username: string, password: string) => {
 
       const user: UserDTO = {
-        id: 1,
+        id: "1",
         username: 'MAX POWER',
         email: 'homer@doh.com',
         firstName: 'Homer',
@@ -98,20 +100,42 @@ export const UserContextProvider = ({ children }: UserProviderProps) => {
         image: 'https://whatsondisneyplus.b-cdn.net/wp-content/uploads/2021/09/homer.png',
         token: '1'
       }
-
-
       setUser(user);
       storeUser(user);
       setToken(user.token);
       storeToken(user.token);
-
   };
 
+  
   const logout = async () => {
     await AsyncStorage.removeItem("@token");
     await AsyncStorage.removeItem("@user");
     setToken("");
     await AsyncStorage.removeItem("@cart");
+  };
+
+  const googleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const res = await GoogleSignin.signIn();
+      if (res) {
+        const user: UserDTO = {
+          id: res.user.id,
+          username: res.user.name || "",
+          email: res.user.email,
+          firstName: res.user.givenName || "",
+          lastName: res.user.familyName || "",
+          gender: "",
+          image: res.user.photo || "",
+          token: res.idToken || "",
+        };
+        setToken(res.idToken || "");
+        storeUser(user);
+        setUser(user);
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
   };
 
   return (
@@ -125,6 +149,7 @@ export const UserContextProvider = ({ children }: UserProviderProps) => {
         getUser,
         login,
         logout,
+        googleSignIn
       }}
     >
       {children}
